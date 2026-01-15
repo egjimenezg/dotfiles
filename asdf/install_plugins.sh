@@ -10,6 +10,7 @@ plugins=(
   "terraform"
   "postgres"
   "jq"
+  "nodejs"
 )
 
 for plugin in "${plugins[@]}"; do
