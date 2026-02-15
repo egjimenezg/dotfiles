@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TMUX_SOURCE_FILE="${TMUX_SOURCE_FILE:-./tmux/.tmux.conf}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TMUX_SOURCE_FILE="${TMUX_SOURCE_FILE:-$SCRIPT_DIR/tmux/.tmux.conf}"
 TMUX_TARGET_FILE="${TMUX_TARGET_FILE:-$HOME/.tmux.conf}"
 
 if [ ! -f "$TMUX_SOURCE_FILE" ]; then
@@ -10,7 +11,7 @@ if [ ! -f "$TMUX_SOURCE_FILE" ]; then
 fi
 
 if [ -f "$TMUX_TARGET_FILE" ]; then
-  echo "ℹ️  Tmux config already exists at $TMUX_TARGET_FILE - skipping (won't overwrite)."
+  echo "Tmux config already exists at $TMUX_TARGET_FILE - skipping (won't overwrite)."
   exit 0
 fi
 
