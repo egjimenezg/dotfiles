@@ -1,0 +1,42 @@
+[user]
+  name = Gamaliel Jimenez
+  email = egjimenezg@gmail.com
+
+[core]
+  editor = vim
+  autocrlf = input
+
+[init]
+  defaultBranch = main
+
+[pull]
+  rebase = false
+
+[fetch]
+  prune = true
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[rebase]
+  autoStash = true
+
+[rerere]
+  enabled = true
+
+[diff]
+  colorMoved = zebra
+  colorMovedWS = allow-indentation-change
+  algorithm = histogram
+
+[color]
+  ui = auto
+
+[color "diff"]
+  old = red bold
+  new = green bold
+  frag = magenta bold
+  meta = cyan bold
+  commit = yellow bold
+  whitespace = red reverse

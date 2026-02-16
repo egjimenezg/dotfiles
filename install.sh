@@ -32,6 +32,9 @@ fi
 echo "Copy configuration files..."
 cp ./shell/.zshrc "$HOME/.zshrc"
 
+echo "Installing Git config..."
+bash "./scripts/install_git.sh"
+
 echo "Reloading shell..."
 chsh -s "$(which zsh)"
 
