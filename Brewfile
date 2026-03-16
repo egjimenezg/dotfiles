@@ -16,3 +16,4 @@ brew "zlib"         # DEFLATE compression library
 brew "xz"           # LZMA compression tools/library
 brew "go-task"      # Simple cross-platform task runner ('task' command)
 brew "pgcli"        # PostgreSQL CLI with autocomplete and syntax highlighting
+brew "tmuxinator"   # Tmux workspace manager with declarative project files
