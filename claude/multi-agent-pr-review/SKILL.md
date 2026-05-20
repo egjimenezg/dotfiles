@@ -46,3 +46,50 @@ Call Bitbucket MCP to get:
 - Author and reviewers
 - PR status and creation date
 
+### Step 3: Start Codex Review Asynchronously
+After fetching the PR metadata, changed files, and diff, sart an independent Codex review using `/codex:review`
+
+Provide Codex with:
+- PR title and description
+- source and target branches
+- changed files
+- full diff or relevant patches
+- review goals
+- existing acceptance criteria
+
+Ask Codex to return only actionable findings ranked by severity, including file/line references and suggested fixes.
+Do not wait for Codex before continuing the Claude-side review. Continue gathering comments, searching repository patterns, and analyzing the changes while Codex runs.
+
+### Step 4: Get Existing Comments to Avoid Duplicates
+Call Bitbucket MCP to fetch ALL existing PR comments:
+Get three types of comments:
+
+Inline comments (specific file + line)
+File-leve comments (specific file, no line)
+General PR comments (no file)
+
+Bitbucket API calls needed:
+Use Bitbucket MCP tool to get:
+
+Pull request comments
+Inline comments with file path and line number
+Comment content and status (resolved/unresolved)
+
+Parse comments to build index:
+For each comment:
+
+Extract file path (if present)
+Extract line number (if present)
+Extract issue keywords from comment text
+Note if resolved or unresolved
+
+Example comment parsing:
+Comment text: "Missing null check here, could throw exception"
+Parsed:
+  - file_path "src/profile.js"
+  - line_number: 145
+  - issue_keywords: ["null check", "exception"]
+  - status: "unresolved"
+Build the index structure:
+See [example-index-structure.json](references/example-index-structure.json) for the expected format.
+
