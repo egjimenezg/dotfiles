@@ -1,0 +1,11 @@
+{
+  "src/auth/controller.js": {
+    67: [
+      {
+        "keywords": ["authorization", "permission", "security"],
+        "status": "unresolved",
+        "comment_id": "12345"
+      }
+    ]
+  }
+}
