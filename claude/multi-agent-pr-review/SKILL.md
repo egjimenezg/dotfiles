@@ -47,49 +47,67 @@ Call Bitbucket MCP to get:
 - PR status and creation date
 
 ### Step 3: Start Codex Review Asynchronously
-After fetching the PR metadata, changed files, and diff, sart an independent Codex review using `/codex:review`
 
-Provide Codex with:
-- PR title and description
-- source and target branches
-- changed files
-- full diff or relevant patches
-- review goals
-- existing acceptance criteria
+Launch Codex review with PR context, diffs, and acceptance criteria.
 
-Ask Codex to return only actionable findings ranked by severity, including file/line references and suggested fixes.
-Do not wait for Codex before continuing the Claude-side review. Continue gathering comments, searching repository patterns, and analyzing the changes while Codex runs.
+Codex runs in parallel while Claude continues Steps 4-7. Results will be retrieved in Step 8.
 
-### Step 4: Get Existing Comments to Avoid Duplicates
-Call Bitbucket MCP to fetch ALL existing PR comments:
-Get three types of comments:
+Expected completion: ~60-90 seconds for typical PRs.
 
-Inline comments (specific file + line)
-File-leve comments (specific file, no line)
-General PR comments (no file)
+### Step 4: Index Existing Comments
 
-Bitbucket API calls needed:
-Use Bitbucket MCP tool to get:
+Fetch PR comments from Bitbucket (inline and general) and build an index structure for duplicate detection.
 
-Pull request comments
-Inline comments with file path and line number
-Comment content and status (resolved/unresolved)
+- Use Bitbucket MCP to get all PR comments
+- Parse into indexed structure: `{file_path: {line_number: [comments]}}`
+- Extract keywords from comment text for matching
+- Store status (RESOLVED/UNRESOLVED)
 
-Parse comments to build index:
-For each comment:
+### Step 5: Search for Similar Patterns
 
-Extract file path (if present)
-Extract line number (if present)
-Extract issue keywords from comment text
-Note if resolved or unresolved
+Find similar implementations in the destination branch (develop/main) to ensure new code follows established patterns.
 
-Example comment parsing:
-Comment text: "Missing null check here, could throw exception"
-Parsed:
-  - file_path "src/profile.js"
-  - line_number: 145
-  - issue_keywords: ["null check", "exception"]
-  - status: "unresolved"
-Build the index structure:
-See [example-index-structure.json](references/example-index-structure.json) for the expected format.
+Compare structure, naming, error handling, logging, and validation approaches. Flag inconsistencies.
+
+For multi-tenant code: verify tenant filters are applied at query level, not just assumed from context.
+
+### Step 6: Analyze and Classify Issues
+
+Classify each finding by type and severity:
+
+**Critical:**
+- SECURITY: Auth, injection, data exposure, buffer/heap overflows
+- PURPOSE-BREAKING: Breaks acceptance criteria
+- TENANT-BOUNDARY: Missing tenant filters at query level
+
+**High:**
+- BUGS: Null checks, type errors, memory leaks, stack overflows
+- PERFORMANCE: N+1 queries, unbounded collections, inefficient algorithms
+
+**Medium:**
+- PATTERNS: Codebase standard deviations
+- TESTING: Missing test coverage
+
+**Low:**
+- NITS: Style, naming, formatting
+
+### Step 7: Build Failures List
+
+Collect all detected issues into a structured list. For each: category, severity, file/line, description, suggested fix, and reference.
+
+Filter out duplicates using the comment index from Step 4 before adding.
+
+### Step 8: Compare and Filter to Consensus
+
+Wait for Codex review (started in Step 3) to complete. Compare Claude and Codex findings by matching file/line/issue-type.
+
+Keep ONLY issues where both reviewers agree (consensus). Discard Claude-only and Codex-only findings.
+
+Merge descriptions from both reviewers for consensus issues. Report: "Found X consensus issues (Y filtered out as single-reviewer findings)."
+
+### Step 9: Present Consensus Issues for Selection
+
+Display only consensus issues (high confidence - both reviewers agree). Show combined analysis from Claude + Codex.
+
+Use ask_user_input_v0 for multi-select grouped by severity. All issues shown have been validated by both reviewers.
 
