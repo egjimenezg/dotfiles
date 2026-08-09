@@ -35,6 +35,12 @@ cp ./shell/.zshrc "$HOME/.zshrc"
 echo "Installing Git config..."
 bash "./scripts/install_git.sh"
 
+echo "Installing Claude config..."
+bash "./scripts/install_claude.sh"
+
+echo "Installing Codex config..."
+bash "./scripts/install_codex.sh"
+
 echo "Reloading shell..."
 chsh -s "$(which zsh)"
 

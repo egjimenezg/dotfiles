@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node ~/.claude/plugins/marketplaces/openai-codex/plugins/codex/scripts/codex-companion.mjs:*)"
+    ]
+  }
+}
