@@ -29,11 +29,14 @@ else
   echo "Oh My Zsh already installed."
 fi
 
-echo "Copy configuration files..."
-cp ./shell/.zshrc "$HOME/.zshrc"
+echo "Installing Zsh config..."
+bash "./scripts/install_zsh.sh"
 
 echo "Installing Git config..."
 bash "./scripts/install_git.sh"
+
+echo "Installing Tmux config..."
+bash "./scripts/install_tmux.sh"
 
 echo "Installing Claude config..."
 bash "./scripts/install_claude.sh"

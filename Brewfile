@@ -17,3 +17,4 @@ brew "xz"           # LZMA compression tools/library
 brew "go-task"      # Simple cross-platform task runner ('task' command)
 brew "pgcli"        # PostgreSQL CLI with autocomplete and syntax highlighting
 brew "tmuxinator"   # Tmux workspace manager with declarative project files
+brew "granted"      # CLI for securely accessing cloud roles and multiple AWS accounts
