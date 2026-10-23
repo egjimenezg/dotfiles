@@ -16,6 +16,9 @@ else
   echo "Homebrew already installed."
 fi
 
+# Initializes Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Install Brew packages
 echo "Installing Brew packages..."
 brew bundle --file="./Brewfile"
@@ -70,6 +73,9 @@ if ! grep -q 'sdkman-init.sh' "$HOME/.bashrc" 2>/dev/null; then
   echo -e "\n# >>> SDKMAN initialization >>>\n$SDKMAN_INIT\n# <<< SDKMAN initialization <<<" >> "$HOME/.bashrc"
 fi
 
+# Ensure Homebrew Bash is used
+export PATH="$(brew --prefix)/bin:$PATH"
+
 # Install Java
 JAVA_VERSION="25-tem"
 
@@ -123,6 +129,8 @@ if ! grep -q "icu4c" "$HOME/.bashrc"; then
   echo 'export PKG_CONFIG_PATH="$(brew --prefix icu4c)/lib/pkgconfig"' >> "$HOME/.bashrc"
   echo "✅ Added PKG_CONFIG_PATH for icu4c to ~/.bashrc"
 fi
+
+export KERL_CONFIGURE_OPTIONS="${KERL_CONFIGURE_OPTIONS:+$KERL_CONFIGURE_OPTIONS }--with-wx-config=$(brew --prefix wxwidgets@3.2)/bin/wx-config-3.2"
 
 asdf install
 
