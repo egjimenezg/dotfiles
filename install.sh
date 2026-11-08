@@ -93,36 +93,30 @@ fi
 sdk default java "$JAVA_VERSION"
 java -version
 
-# ------------------------
-# Install asdf
-# ------------------------
-if [ ! -d "$HOME/.asdf" ]; then
-  echo "Installing asdf..."
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
-else
-  echo "asdf already installed. Updating..."
-fi
+MISE_BIN="$HOME/.local/bin/mise"
 
-# Load asdf
-. "$HOME/.asdf/asdf.sh"
+if [ ! -x "$MISE_BIN" ]; then
+  echo "Installing mise..."
+  curl -fsSL https://mise.run | MISE_VERSION=v2026.11.0 MISE_INSTALL_HELP=0 sh
+else
+  echo "mise already installed."
+fi
 
 # Add to .zshrc
-if ! grep -q 'asdf.sh' "$HOME/.zshrc"; then
-  echo -e '\n# asdf' >> "$HOME/.zshrc"
-  echo '. $HOME/.asdf/asdf.sh' >> "$HOME/.zshrc"
-  echo '. $HOME/.asdf/completions/asdf.bash' >> "$HOME/.zshrc"
+if ! grep -q 'mise activate' "$HOME/.zshrc"; then
+  echo -e '\n# mise' >> "$HOME/.zshrc"
+  echo 'eval "$($HOME/.local/bin/mise activate zsh)"' >> "$HOME/.zshrc"
 fi
 
-echo "🔧 Installing asdf plugins..."
-bash "./asdf/install_plugins.sh"
+# ~/.tool-versions only applies under $HOME, so global tools live in mise's own config.
+MISE_GLOBAL_CONFIG="$HOME/.config/mise/config.toml"
 
-TARGET_FILE="$HOME/.tool-versions"
-
-if [ -f "$TARGET_FILE" ]; then
-  echo "A .tool-versions file already exists at $TARGET_FILE"
+if [ -f "$MISE_GLOBAL_CONFIG" ]; then
+  echo "A mise config already exists at $MISE_GLOBAL_CONFIG"
 else
-  echo "Copying .tool-versions to $TARGET_FILE"
-  cp "./asdf/.tool-versions" "$TARGET_FILE"
+  echo "Copying mise config to $MISE_GLOBAL_CONFIG"
+  mkdir -p "$(dirname "$MISE_GLOBAL_CONFIG")"
+  cp "./mise/global_config.toml" "$MISE_GLOBAL_CONFIG"
 fi
 
 if ! grep -q "icu4c" "$HOME/.bashrc"; then
@@ -132,7 +126,7 @@ fi
 
 export KERL_CONFIGURE_OPTIONS="${KERL_CONFIGURE_OPTIONS:+$KERL_CONFIGURE_OPTIONS }--with-wx-config=$(brew --prefix wxwidgets@3.2)/bin/wx-config-3.2"
 
-asdf install
+"$MISE_BIN" install
 
 echo "✅ Setup complete!"
 zsh
